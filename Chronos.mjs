@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
 
@@ -20,6 +21,20 @@ class Chronos {
       console.log("Already initialized the .chronos directory");
     }
   }
+
+  hashObject(content) {
+    return crypto.createHash("sha1").update(content, "utf-8").digest("hex");
+  }
+
+  async add(fileToBeAdded) {
+    const fileData = await fs.readFile(fileToBeAdded, { encoding: "utf-8" });
+    const fileHash = this.hashObject(fileData);
+    console.log(fileHash);
+    const newFileHashedObjectPath = path.join(this.objectsPath, fileHash);
+    await fs.writeFile(newFileHashedObjectPath, fileData);
+    console.log(`Added ${fileToBeAdded} to the index`);
+  }
 }
 
 const chronos = new Chronos();
+chronos.add("sample.txt");
