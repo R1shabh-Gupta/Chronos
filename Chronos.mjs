@@ -69,10 +69,31 @@ class Chronos {
       return null;
     }
   }
+
+  async log() {
+    let currentCommitHash = await this.getCurrentHead();
+
+    while (currentCommitHash) {
+      const commitData = JSON.parse(
+        await fs.readFile(
+          path.join(this.objectsPath, currentCommitHash),
+          "utf-8"
+        )
+      );
+
+      console.log("-".repeat(50));
+      console.log(
+        `Commit: ${currentCommitHash}\nDate: ${commitData.timeStamp}\n${commitData.message}\n\n`
+      );
+
+      currentCommitHash = commitData.parent;
+    }
+  }
 }
 
 (async () => {
   const chronos = new Chronos();
   await chronos.add("sample.txt");
-  await chronos.commit("Initial commit");
+  await chronos.commit("Second commit");
+  await chronos.log();
 })();
