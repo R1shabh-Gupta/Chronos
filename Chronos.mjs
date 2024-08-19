@@ -1,8 +1,13 @@
+#!/usr/bin/env node
+
 import chalk from "chalk";
+import { Command } from "commander";
 import crypto from "crypto";
 import { diffLines } from "diff";
 import fs from "fs/promises";
 import path from "path";
+
+const program = new Command();
 
 class Chronos {
   constructor(repoPath = ".") {
@@ -114,9 +119,9 @@ class Chronos {
           file.path
         );
         if (getParentFileContent !== undefined) {
-          // console.log("\nDiff:");
+          console.log("\nDiff:");
           const diff = diffLines(getParentFileContent, fileContent);
-          console.log(diff);
+
           diff.forEach((part) => {
             if (part.added) {
               process.stdout.write(chalk.green("++" + part.value));
@@ -160,12 +165,28 @@ class Chronos {
   }
 }
 
-(async () => {
+program.command("init").action(() => {
   const chronos = new Chronos();
-  // await chronos.add("sample.txt");
-  // await chronos.commit("Init commit");
-  // await chronos.log();
-  await chronos.showCommitDifference(
-    "5be6ad5440a66c1732a2a567850b84eaae63ea9e"
-  );
-})();
+});
+
+program.command("add <file>").action(async (file) => {
+  const chronos = new Chronos();
+  await chronos.add(file);
+});
+
+program.command("commit <message>").action(async (message) => {
+  const chronos = new Chronos();
+  await chronos.commit(message);
+});
+
+program.command("log").action(async () => {
+  const chronos = new Chronos();
+  await chronos.log();
+});
+
+program.command("show <commitHash>").action(async (commitHash) => {
+  const chronos = new Chronos();
+  await chronos.showCommitDifference(commitHash);
+});
+
+program.parse(process.argv);
