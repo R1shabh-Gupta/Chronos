@@ -1,4 +1,6 @@
+import chalk from "chalk";
 import crypto from "crypto";
+import { diffLines } from "diff";
 import fs from "fs/promises";
 import path from "path";
 
@@ -89,11 +91,81 @@ class Chronos {
       currentCommitHash = commitData.parent;
     }
   }
+
+  async showCommitDifference(commitHash) {
+    const commitData = JSON.parse(await this.getCommitData(commitHash));
+    if (!commitData) {
+      console.log("Commit not found");
+      return;
+    }
+    console.log("Changes in the last commit are: ");
+
+    for (const file of commitData.files) {
+      console.log(`File: ${file.path}`);
+      const fileContent = await this.getFileContent(file.hash);
+      console.log(fileContent);
+
+      if (commitData.parent) {
+        const parentCommitData = JSON.parse(
+          await this.getCommitData(commitData.parent)
+        );
+        const getParentFileContent = await this.getParentFileContent(
+          parentCommitData,
+          file.path
+        );
+        if (getParentFileContent !== undefined) {
+          // console.log("\nDiff:");
+          const diff = diffLines(getParentFileContent, fileContent);
+          console.log(diff);
+          diff.forEach((part) => {
+            if (part.added) {
+              process.stdout.write(chalk.green("++" + part.value));
+            } else if (part.removed) {
+              process.stdout.write(chalk.red("--" + part.value));
+            } else {
+              process.stdout.write(chalk.grey(part.value));
+            }
+          });
+          console.log(); // new line
+        } else {
+          console.log("New file in this commit");
+        }
+      } else {
+        console.log("First commit");
+      }
+    }
+  }
+
+  async getParentFileContent(parentCommitData, filePath) {
+    const parentFile = parentCommitData.files.find(
+      (file) => file.path === filePath
+    );
+    if (parentFile) {
+      return await this.getFileContent(parentFile.hash);
+    }
+  }
+  async getCommitData(commithash) {
+    const commitPath = path.join(this.objectsPath, commithash);
+    try {
+      return await fs.readFile(commitPath, { encoding: "utf-8" });
+    } catch (error) {
+      console.log("Failed to read the commit data", error);
+      return null;
+    }
+  }
+
+  async getFileContent(fileHash) {
+    const objectPath = path.join(this.objectsPath, fileHash);
+    return await fs.readFile(objectPath, { encoding: "utf-8" });
+  }
 }
 
 (async () => {
   const chronos = new Chronos();
-  await chronos.add("sample.txt");
-  await chronos.commit("Second commit");
-  await chronos.log();
+  // await chronos.add("sample.txt");
+  // await chronos.commit("Init commit");
+  // await chronos.log();
+  await chronos.showCommitDifference(
+    "5be6ad5440a66c1732a2a567850b84eaae63ea9e"
+  );
 })();
