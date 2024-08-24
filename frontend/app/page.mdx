@@ -1,0 +1,37 @@
+import { SparkleIcon } from "@/components/SparkleIcon";
+
+export { Layout as default } from "@/components/Layout";
+
+---
+
+![](@/images/chronos-file-structure.png)
+
+## Chronos: A Lightweight Version Control System {{ date: '2024-08-14T00:00Z' }}
+
+In this release, I've implemented the core features of Chronos, a simplified version control system designed to offer essential Git-like functionality while being easy to understand and extend. Chronos is ideal for those who want to grasp the basics of version control or need a lightweight tool for smaller projects.
+
+### <SparkleIcon /> Key Features
+
+- **Initialize a Repository**: Easily set up a new Chronos repository with the `init` command, creating a `.chronos` directory to track changes.
+- **Add Files**: Stage your changes with the `add` command. Chronos securely stores the content by hashing it using SHA-1, ensuring each version is unique.
+- **Commit Changes**: Save your progress with the `commit` command. Chronos stores a timestamped snapshot of your changes, along with a custom message to describe your work.
+- **View Commit History**: Use the `log` command to view a chronological list of your commits, helping you track the evolution of your project.
+- **Diff Between Commits**: The `show` command lets you compare changes between commits, highlighting additions, removals, and modifications.
+
+---
+
+![](@/images/commit-diff.png)
+
+## Future Enhancements {{ date: '2024-08-24T00:00Z' }}
+
+While Chronos already supports basic version control operations, future versions will include additional features to expand its capabilities. Some of the planned enhancements are:
+
+### <SparkleIcon /> Planned Features
+
+- **Branch Management**: Allow the creation and management of branches to facilitate parallel development.
+- **AI-Powered Commit Suggestions**: Integrate AI to suggest meaningful commit messages based on the changes made, saving time and improving consistency.
+- **Checkout**: Implement the ability to switch between different branches or specific commits, allowing for flexible project navigation.
+- **Stash Changes**: Add the ability to temporarily save work-in-progress changes without committing them, enabling cleaner commits.
+- **Improved Diff Tools**: Enhance the `show` command to include more advanced diffing features, making it easier to understand changes between commits.
+
+Chronos is an open-source project, and I'm excited to continue developing it. Stay tuned for more updates and features that will make Chronos even more powerful and user-friendly!
