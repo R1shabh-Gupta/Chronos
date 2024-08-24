@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss";
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 const config = {
-  darkMode: ["class"],
+  darkMode: "selector",
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -19,8 +19,17 @@ const config = {
       },
     },
     extend: {
+      fontSize: {
+        "2xs": ".6875rem",
+      },
       fontFamily: {
-        sans: ["var(--font-sans)", ...fontFamily.sans],
+        sans: "var(--font-inter)",
+        display: "var(--font-mona-sans)",
+      },
+      opacity: {
+        2.5: "0.025",
+        7.5: "0.075",
+        15: "0.15",
       },
       colors: {
         border: "hsl(var(--border))",
