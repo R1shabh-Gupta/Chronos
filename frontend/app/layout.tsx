@@ -24,6 +24,9 @@ export const metadata: Metadata = {
   title: "Chronos - Open-source Version Control System for Developers",
   description:
     "Chronos is a powerful, open-source version control system designed for developers. Manage your codebase with ease, track changes, and collaborate efficiently. It's fast, intuitive, and built to enhance your workflow.",
+  other: {
+    cryptomus: "e32cc76d",
+  },
 };
 
 export default function RootLayout({
